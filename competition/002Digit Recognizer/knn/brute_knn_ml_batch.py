@@ -53,4 +53,4 @@ def digitRecognizeKnnCrossVal():
 if __name__ == "__main__":
     startTime = time.clock()
     digitRecognizeKnnCrossVal()
-    print("[Finished in %ds]"%(time.clock()-startTime))
+    print("[Finished in %ds]"%(time.clock()-startTime))#23分钟
