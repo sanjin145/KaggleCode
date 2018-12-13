@@ -9,7 +9,7 @@
 """
 
 import numpy as np
-import operator
+import time
 from os import listdir
 from sklearn.neighbors import KNeighborsClassifier as kNN
 
@@ -72,7 +72,7 @@ def handwritingClassTest():
         trainingMat[i, :] = img2vector(absPath + "trainingDigits/%s" % (fileNameStr))
 
     # 构建kNN分类器
-    neigh = kNN(n_neighbors=3, algorithm='auto')
+    neigh = kNN(n_neighbors=3, algorithm='brute')
     # 拟合模型，trainingMat为训练矩阵，hwLabels为对应的标签
     neigh.fit(trainingMat, hwLabels)
 
@@ -99,4 +99,7 @@ def handwritingClassTest():
     print("总共错了%d个数据\n,错误率为%f%%" % (errorCount, errorCount / testDataSize * 100))
 
 if __name__ == "__main__":
+    start = time.clock()
     handwritingClassTest()
+    end = time.clock()
+    print("[Finished in %ds]" % (end - start))
