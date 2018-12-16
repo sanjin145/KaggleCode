@@ -33,21 +33,21 @@ def digitRecognizeKnnCrossVal():
 
     #创建KNN分类器,进行交叉验证调参
     neigh = KNeighborsClassifier(n_neighbors=5,algorithm="kd_tree")
-    #score = cross_val_score(neigh,trainDataSetSmall,trainDataSetLabelSmall,cv=5)
-    #print(score.mean())
+    score = cross_val_score(neigh,trainDataSetSmall,trainDataSetLabelSmall,cv=5)
+    print(score.mean())
 
     #正式训练测试集
-    neigh.fit(trainDataSet,trainDataSetLabel)
-    predResultSet = neigh.predict(ndTestDataSet)
+    #neigh.fit(trainDataSet,trainDataSetLabel)
+    #predResultSet = neigh.predict(ndTestDataSet)
     #print(type(predResultSet)) #ndarray
 
     #写入训练结果到提交文件
-    index = []
-    for i in range(predResultSet.shape[0]):
-        index.append(i+1)
-
-    predDataFrame = pd.DataFrame({"ImageId":index,"Label":predResultSet})
-    predDataFrame.to_csv("brute_knn_submission.csv",index=False)
+    # index = []
+    # for i in range(predResultSet.shape[0]):
+    #     index.append(i+1)
+    #
+    # predDataFrame = pd.DataFrame({"ImageId":index,"Label":predResultSet})
+    # predDataFrame.to_csv("brute_knn_submission.csv",index=False)
 
 
 if __name__ == "__main__":
