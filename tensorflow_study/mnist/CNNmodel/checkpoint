@@ -1,0 +1,2 @@
+model_checkpoint_path: "E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\CNNmodel\\my_minist_cnn"
+all_model_checkpoint_paths: "E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\CNNmodel\\my_minist_cnn"
