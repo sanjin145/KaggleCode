@@ -4,6 +4,9 @@ import tensorflow as tf
 import pandas as pd
 import numpy as np
 import time
+import sys
+
+fileDir = "/Users/walkingpotato/PycharmProjects/KaggleCode/tensorflow_study/mnist/"
 
 def read_data(filename):  # 读取数据
     data = pd.read_csv(filename)
@@ -13,14 +16,25 @@ def handle_data(data):
     y_data = data['label'].values.ravel()  # 获取标签数据
     data.drop(labels='label', axis=1, inplace=True)  # Image 数据
     return data, y_data
+
 def train_val_split(x_data, y_data):
     large = x_data.shape[0]
     print(large)
-    x_train = x_data.iloc[:large - 200, ].div(255.0)  # 由于数据值范围在0-255，部分值差异太大，故进行0-1标准化
+    print(sys.getsizeof(x_data)/(1024*1024))
+    # 由于数据值范围在0-255，部分值差异太大，故进行0-1标准化
+    x_train = x_data.iloc[:large-200,]
+    try:
+        x_train = x_train.div(255)
+        print(x_train)
+    except Exception as e:
+        print(e)
+
+    #x_train = x_data.iloc[:20,].div(255.0)
     y_train = y_data[:large - 200, ].astype(np.float32)  # 需要保证数据类型一致性
     x_val = x_data.iloc[large - 200:, ].div(255.0)  # 由于数据值范围在0-255，部分值差异太大，故进行0-1标准化，此为验证Images数据，用来验证后面的模型的准确率
     y_val = y_data[large - 200:, ].astype(np.float32)  # 此为Label数据，用来验证后面模型的准确率
     return x_train, y_train, x_val, y_val
+
 # one_hot编码
 def one_hot(data):
     num_class = len(np.unique(data))  # 获取label的个数，这里我们的手写识别数字范围是0~9，所以num_class=10
@@ -82,7 +96,7 @@ def load_data(data, filename):  # 此处只加载模型的参数
             y_ = tf.argmax(y_pre,
                            1)  # 获取最终结果，由于之前我们的y 存储的是0，1值，这里我们需要获取对应的0,1值对应的数字，如果如果为[0,0,0,0,1,0,0,0,0,0]，这里我们通过argmax会直接转换为5
             result = y_.eval()  # tensor变量转换为array
-            pd.DataFrame({'ImageId': np.arange(len(result)) + 1, 'Label': result}).to_csv('E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\result.csv',
+            pd.DataFrame({'ImageId': np.arange(len(result)) + 1, 'Label': result}).to_csv(fileDir + 'result.csv',
                                                                                           index=False)  # 输出到CSV文件
             print(y_.eval())
     except Exception as e:
@@ -168,7 +182,7 @@ class CNN():
             accuracy_n = sess.run(accuracy, feed_dict={x: x_val, y_: y_val, keep_prob: 1.0})
             batchEndTime = time.clock()
             print("第" + str(i + 1) + "轮，准确率为：" + str(accuracy_n) + "，共花了" + str(int(batchEndTime-batchStartTime)) + "s")
-        saver.save(sess, 'E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\CNNmodel\\my_minist_cnn')  # 保存模型到本地设置
+        saver.save(sess, fileDir + 'CNNmodel/my_minist_cnn')  # 保存模型到本地设置
 
     def load_cnn_model(self, data, filename):  # 此处只加载模型
         try:
@@ -180,7 +194,7 @@ class CNN():
             """
             with tf.Session() as sess:  # 初始化Session
                 new_saver = tf.train.import_meta_graph(filename)
-                new_saver.restore(sess, 'E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\CNNmodel\\my_minist_cnn')
+                new_saver.restore(sess, fileDir + 'CNNmodel/my_minist_cnn')
                 # 获取预测目标公式
                 y_conv = tf.get_collection('pred_network')[0]
                 graph = tf.get_default_graph()
@@ -197,14 +211,14 @@ class CNN():
                     result_ = tf.argmax(y_pre, 1)
                     result_tran = result_.eval().tolist()  # tensor变量转换为array 然后平铺为list
                     result = result + result_tran  # list相加
-                pd.DataFrame({'ImageId': np.arange(len(result)) + 1, 'Label': result}).to_csv('E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\cnn_mnist_submission_2.csv',
+                pd.DataFrame({'ImageId': np.arange(len(result)) + 1, 'Label': result}).to_csv(fileDir + 'cnn_mnist_submission_2.csv',
                                                                                               index=False)  # 输出到CSV文件
 
         except Exception as e:
             print(str(e))
 
 def train():
-    train = read_data('E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\train.csv')
+    train = read_data(fileDir + 'train.csv')
 
     data, y_data = handle_data(train)
     y = one_hot(y_data)  # 通过one_hot编码，把shape变为（？，10）
@@ -216,16 +230,16 @@ def train():
     # train_model(x_train,y_train,x_val,y_val,8)
 
 def test():
-    test = read_data('E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\test.csv')
+    test = read_data(fileDir + 'test.csv')
     test = test.div(255.0)
     cnn = CNN()
-    cnn.load_cnn_model(test, 'E:\\Code\\KaggleCode\\tensorflow_study\\mnist\\CNNmodel\\my_minist_cnn.meta')
+    cnn.load_cnn_model(test, fileDir + 'CNNmodel/my_minist_cnn.meta')
 
 if __name__ == '__main__':
     startTime = time.clock()
 
-    #train()
-    test()
+    train()
+    #test()
     endTime = time.clock()
     print("Finished in %ds"%(endTime-startTime))
 
