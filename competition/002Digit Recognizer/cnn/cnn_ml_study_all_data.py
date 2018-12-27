@@ -16,7 +16,7 @@ import seaborn as sns
 import os
 
 import plaidml.keras
-plaidml.keras.install_backend()
+#plaidml.keras.install_backend()
 
 np.random.seed(2)
 

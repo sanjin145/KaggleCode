@@ -43,3 +43,4 @@ print("-" * 60)
 train_df.Sex[train_df.Sex=='male'] = 0
 train_df.Sex[train_df.Sex=='female'] = 1
 print(train_df.Sex.describe())
+
