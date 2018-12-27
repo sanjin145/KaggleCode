@@ -1,0 +1,14 @@
+Enable experimental device support? (y,n)[n]:y
+
+Multiple devices detected (You can override by setting PLAIDML_DEVICE_IDS).
+Please choose a default device:
+
+   1 : llvm_cpu.0
+   2 : opencl_intel_intel(r)_hd_graphics_630.0
+   3 : metal_intel(r)_hd_graphics_630.0
+   4 : opencl_cpu.0
+   5 : metal_amd_radeon_pro_555.0
+   6 : opencl_amd_amd_radeon_pro_555_compute_engine.0
+
+Default device? (1,2,3,4,5,6)[1]:5
+
